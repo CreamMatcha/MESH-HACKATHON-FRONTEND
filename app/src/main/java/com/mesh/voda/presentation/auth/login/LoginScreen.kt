@@ -48,48 +48,20 @@ fun LoginScreen(
     ) {
         Spacer(modifier = Modifier.weight(1f))
 
-        // 로고 (초록 둥근 사각형 + 새싹)
-        Box(contentAlignment = Alignment.Center) {
-            Box(
-                modifier = Modifier
-                    .size(96.dp)
-                    .clip(RoundedCornerShape(26.dp))
-                    .background(WireframeGreen),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    Icons.Default.Eco,
-                    contentDescription = "VoDa 로고",
-                    tint = Color.White,
-                    modifier = Modifier.size(46.dp)
-                )
-            }
-            // 장식용 점
-            Box(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .offset(x = 7.dp, y = (-7).dp)
-                    .size(15.dp)
-                    .clip(CircleShape)
-                    .background(WireframeGreen.copy(alpha = 0.4f))
-            )
-            Box(
-                modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .offset(x = (-7).dp, y = 7.dp)
-                    .size(11.dp)
-                    .clip(CircleShape)
-                    .background(WireframeGreen.copy(alpha = 0.25f))
-            )
-        }
+        // 로고
+        Image(
+            painter = painterResource(id = R.drawable.home_ic_logo),
+            contentDescription = "VoDa 로고",
+            modifier = Modifier.size(200.dp)
+        )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         Text("VoDa", fontSize = 34.sp, fontWeight = FontWeight.Black, color = WireframeBlack)
         Spacer(modifier = Modifier.height(10.dp))
         Text("나에게 꼭 맞는 봉사를 찾아드려요", fontSize = 14.sp, color = WireframeGrayText)
 
         Spacer(modifier = Modifier.height(28.dp))
-        // AI 분석 안내 알약 (테두리 있음)
+
         Box(
             modifier = Modifier
                 .clip(RoundedCornerShape(50))
@@ -102,7 +74,7 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.weight(0.9f))
 
-        // 구글로 시작하기 버튼 (그림자 없음)
+
         Button(
             onClick = onGoogleStart, // TODO: 실제 구글 로그인 SDK 연동 (현재 Mock)
             modifier = Modifier
