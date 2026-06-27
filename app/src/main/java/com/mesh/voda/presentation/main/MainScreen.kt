@@ -107,7 +107,8 @@ fun MainScreen(
             composable(Screen.Home.route) {
                 HomeScreen(
                     onNavigateToRecommendation = onNavigateToRecommendation,
-                    onNavigateToSettings = onNavigateToSettings
+                    onNavigateToSettings = onNavigateToSettings,
+                    onNavigateToMap = { navController.navigate(Screen.Map.route) }
                 )
             }
             composable(Screen.Search.route) {

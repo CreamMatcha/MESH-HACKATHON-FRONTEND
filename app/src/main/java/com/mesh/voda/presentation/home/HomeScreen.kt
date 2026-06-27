@@ -73,7 +73,8 @@ private val regionFilterChips = listOf("내 주변", "서울 마포구", "1km �
 @Composable
 fun HomeScreen(
     onNavigateToRecommendation: () -> Unit = {},
-    onNavigateToSettings: () -> Unit = {}
+    onNavigateToSettings: () -> Unit = {},
+    onNavigateToMap: () -> Unit = {}
 ) {
     var selectedRegionFilter by remember { mutableStateOf("내 주변") }
 
@@ -96,7 +97,8 @@ fun HomeScreen(
                     title = "지역 기반 봉사",
                     actionLabel = "지도 보기",
                     actionIconRes = R.drawable.home_ic_map,
-                    modifier = Modifier.padding(top = 0.dp)
+                    modifier = Modifier.padding(top = 0.dp),
+                    onAction = onNavigateToMap
                 )
             }
             item {
