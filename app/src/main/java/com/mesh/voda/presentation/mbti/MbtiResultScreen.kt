@@ -29,13 +29,13 @@ private val GreenTint = Color(0xFFE3F0DA)
 private val PinkTint = Color(0xFFF6E2E2)
 private val YellowTint = Color(0xFFFBEFCB)
 
-// --- 가짜 데이터 (TODO: 백엔드에서 MBTI 결과 받아 교체) ---
+
 private data class MbtiMatch(val emoji: String, val label: String, val circleColor: Color)
 
 private data class MbtiResult(
     val avatarEmoji: String,
-    val typeLabel: String,      // "GREEN · 그린"
-    val typeName: String,       // "그린메이커형"
+    val typeLabel: String,
+    val typeName: String,
     val description: String,
     val keywords: List<String>,
     val matches: List<MbtiMatch>,
