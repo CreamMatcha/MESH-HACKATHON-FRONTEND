@@ -17,6 +17,7 @@ import com.mesh.voda.presentation.auth.signup.SignupScreen
 import com.mesh.voda.presentation.main.MainScreen
 import com.mesh.voda.presentation.mbti.MbtiResultScreen
 import com.mesh.voda.presentation.mbti.RecommendationScreen
+import com.mesh.voda.presentation.settings.SettingsScreen
 import com.mesh.voda.presentation.onboarding.OnboardingScreen
 
 @Composable
@@ -48,12 +49,17 @@ fun VodaNavGraph(
                 }
             )
         }
+
+        // 💡 에러 해결 지점: LoginScreen 파라미터 스펙 정합성 동기화
         composable(Screen.Login.route) {
             LoginScreen(
-                // Mock: 구글 로그인 → 프로필 설정(회원가입) 플로우로 진입
-                onGoogleStart = { navController.navigate(Screen.Signup.route) }
+                // 상대방이 새로 설계한 구글 로그인 진입 인터페이스 콜백 연결
+                onGoogleStart = {
+                    navController.navigate(Screen.Signup.route)
+                }
             )
         }
+
         composable(Screen.Signup.route) {
             SignupScreen(
                 onSignupComplete = { navController.navigate(Screen.MbtiResult.route) },
@@ -75,7 +81,16 @@ fun VodaNavGraph(
             )
         }
         composable(Screen.Home.route) {
-            MainScreen()
+            MainScreen(
+                onNavigateToSettings = {
+                    navController.navigate(Screen.Settings.route)
+                }
+            )
+        }
+        composable(Screen.Settings.route) {
+            SettingsScreen(
+                onBack = { navController.popBackStack() }
+            )
         }
     }
 }

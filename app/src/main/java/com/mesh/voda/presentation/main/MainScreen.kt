@@ -24,8 +24,8 @@ import androidx.navigation.compose.rememberNavController
 import com.mesh.voda.R
 import com.mesh.voda.navigation.Screen
 import com.mesh.voda.presentation.activity.ActivityScreen
-import com.mesh.voda.presentation.home.HomeScreen
 import com.mesh.voda.presentation.detail.DetailScreen
+import com.mesh.voda.presentation.home.HomeScreen
 import com.mesh.voda.presentation.map.MapScreen
 import com.mesh.voda.presentation.saved.SavedScreen
 import com.mesh.voda.presentation.search.SearchScreen
@@ -34,13 +34,6 @@ private data class BottomNavItem(
     val screen: Screen,
     val label: String,
     val icon: @Composable () -> Unit,
-)
-
-private val bottomNavScreens = setOf(
-    Screen.Home.route,
-    Screen.Search.route,
-    Screen.Saved.route,
-    Screen.Activity.route,
 )
 
 @Composable
@@ -64,42 +57,42 @@ fun MainScreen(
         },
     )
 
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
-    val showBottomBar = currentRoute in bottomNavScreens
-
     Scaffold(
         bottomBar = {
-            if (showBottomBar) {
-                Column {
-                    androidx.compose.material3.HorizontalDivider(
-                        color = Color(0xFFEDE8DC),
-                        thickness = 1.dp
-                    )
-                    NavigationBar(containerColor = Color(0xFFFBF7EF)) {
-                        navItems.forEach { item ->
-                            val isSelected = navBackStackEntry?.destination
-                                ?.hierarchy?.any { it.route == item.screen.route } == true
-                            NavigationBarItem(
-                                selected = isSelected,
-                                onClick = {
-                                    navController.navigate(item.screen.route) {
-                                        popUpTo(navController.graph.findStartDestination().id) { saveState = true }
-                                        launchSingleTop = true
-                                        restoreState = true
-                                    }
-                                },
-                                icon = item.icon,
-                                label = { Text(item.label, fontSize = 11.sp) },
-                                colors = NavigationBarItemDefaults.colors(
-                                    selectedIconColor = Color(0xFF4E8A3F),
-                                    selectedTextColor = Color(0xFF4E8A3F),
-                                    indicatorColor = Color.Transparent,
-                                    unselectedIconColor = Color(0xFFBBBBBB),
-                                    unselectedTextColor = Color(0xFFBBBBBB)
-                                )
+            val navBackStackEntry by navController.currentBackStackEntryAsState()
+            val currentDestination = navBackStackEntry?.destination
+
+            Column() {
+                androidx.compose.material3.HorizontalDivider(
+                    color = Color(0xFFEDE8DC),
+                    thickness = 1.dp
+                )
+
+                NavigationBar(
+                    containerColor = Color(0xFFFBF7EF)
+                ) {
+                    navItems.forEach { item ->
+                        val isSelected = currentDestination?.hierarchy?.any { it.route == item.screen.route } == true
+
+                        NavigationBarItem(
+                            selected = isSelected,
+                            onClick = {
+                                navController.navigate(item.screen.route) {
+                                    popUpTo(navController.graph.findStartDestination().id) { saveState = true }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
+                            },
+                            icon = item.icon,
+                            label = { Text(item.label, fontSize = 11.sp) },
+                            colors = NavigationBarItemDefaults.colors(
+                                selectedIconColor = Color(0xFF4E8A3F),
+                                selectedTextColor = Color(0xFF4E8A3F),
+                                indicatorColor = Color.Transparent,
+                                unselectedIconColor = Color(0xFFBBBBBB),
+                                unselectedTextColor = Color(0xFFBBBBBB)
                             )
-                        }
+                        )
                     }
                 }
             }
@@ -118,7 +111,11 @@ fun MainScreen(
                 )
             }
             composable(Screen.Saved.route) { SavedScreen() }
-            composable(Screen.Activity.route) { ActivityScreen() }
+            composable(Screen.Activity.route) {
+                ActivityScreen(
+                    onNavigateToSettings = onNavigateToSettings
+                )
+            }
             composable(Screen.Map.route) {
                 MapScreen(
                     onBack = { navController.popBackStack() },
