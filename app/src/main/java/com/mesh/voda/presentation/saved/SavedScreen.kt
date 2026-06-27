@@ -95,17 +95,15 @@ fun SavedScreen() {
                 .padding(
                     PaddingValues(
                         start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
-                        top = paddingValues.calculateTopPadding(),
+                        top = 8.dp,
                         end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
-                        bottom = 0.dp // 💡 하단 바텀바와 밀착되도록 간격 차단
+                        bottom = 0.dp
                     )
                 )
                 .fillMaxSize()
         ) {
             // 타이틀 및 배지 영역 고정 (패딩 유지)
             Column(modifier = Modifier.padding(horizontal = 20.dp)) {
-                Spacer(modifier = Modifier.height(24.dp)) // 상단 패딩 피그마 규격과 동기화
-
                 Text(
                     text = "찜한 봉사",
                     fontSize = 24.sp,
