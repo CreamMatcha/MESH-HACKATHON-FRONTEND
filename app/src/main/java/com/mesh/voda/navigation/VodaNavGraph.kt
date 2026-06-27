@@ -8,6 +8,7 @@ import com.mesh.voda.presentation.auth.login.LoginScreen
 import com.mesh.voda.presentation.auth.signup.SignupScreen
 import com.mesh.voda.presentation.onboarding.OnboardingScreen
 import com.mesh.voda.presentation.main.MainScreen
+import com.mesh.voda.presentation.settings.SettingsScreen
 
 @Composable
 fun VodaNavGraph() {
@@ -43,7 +44,16 @@ fun VodaNavGraph() {
             )
         }
         composable(Screen.Home.route) {
-            MainScreen()
+            MainScreen(
+                onNavigateToSettings = {
+                    navController.navigate(Screen.Settings.route)
+                }
+            )
+        }
+        composable(Screen.Settings.route) {
+            SettingsScreen(
+                onBack = { navController.popBackStack() }
+            )
         }
     }
 }
