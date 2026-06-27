@@ -15,6 +15,8 @@ import androidx.navigation.compose.rememberNavController
 import com.mesh.voda.presentation.auth.login.LoginScreen
 import com.mesh.voda.presentation.auth.signup.SignupScreen
 import com.mesh.voda.presentation.main.MainScreen
+import com.mesh.voda.presentation.mbti.MbtiResultScreen
+import com.mesh.voda.presentation.mbti.RecommendationScreen
 import com.mesh.voda.presentation.onboarding.OnboardingScreen
 
 @Composable
@@ -54,12 +56,22 @@ fun VodaNavGraph(
         }
         composable(Screen.Signup.route) {
             SignupScreen(
-                onSignupComplete = {
+                onSignupComplete = { navController.navigate(Screen.MbtiResult.route) },
+                onBack = { navController.popBackStack() }
+            )
+        }
+        composable(Screen.MbtiResult.route) {
+            MbtiResultScreen(
+                onSeeRecommendations = { navController.navigate(Screen.Recommendation.route) }
+            )
+        }
+        composable(Screen.Recommendation.route) {
+            RecommendationScreen(
+                onGoHome = {
                     navController.navigate(Screen.Home.route) {
                         popUpTo(Screen.Login.route) { inclusive = true }
                     }
-                },
-                onBack = { navController.popBackStack() }
+                }
             )
         }
         composable(Screen.Home.route) {

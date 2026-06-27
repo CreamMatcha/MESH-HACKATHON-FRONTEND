@@ -553,7 +553,12 @@ private fun TendencyStep(state: SignupUiState, viewModel: SignupViewModel) {
                 TendencyChip(text = place, selected = state.activityPlace == place) { viewModel.selectActivityPlace(place) }
             }
         }
-        Row(modifier = Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        // 장소(실내/실외)와 인원(혼자/단체)이 별개 선택임을 명확히 하는 구분선
+        HorizontalDivider(
+            modifier = Modifier.padding(vertical = 14.dp),
+            color = VoDaLightGray
+        )
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             listOf("혼자 참여", "단체 참여").forEach { groupType ->
                 TendencyChip(text = groupType, selected = state.activityGroupType == groupType) { viewModel.selectActivityGroupType(groupType) }
             }
