@@ -105,7 +105,9 @@ fun MainScreen(
             composable(Screen.Search.route) { SearchScreen() }
             composable(Screen.Saved.route) { SavedScreen() }
             composable(Screen.Activity.route) {
-                ActivityScreen()
+                ActivityScreen(
+                    onNavigateToSettings = onNavigateToSettings
+                )
             }
         }
     }

@@ -1,12 +1,17 @@
 package com.mesh.voda.presentation.saved
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -15,17 +20,19 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,14 +40,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.foundation.shape.CircleShape
 
 private val VodaBgColor = Color(0xFFFBF9F1)
 private val VodaCardBgColor = Color(0xFFFFFFFF)
 private val VodaGreenMain = Color(0xFF539145)
 private val VodaHeartColor = Color(0xFFE55353)
+private val VodaLineColor = Color(0xFFEDE8DC) // 💡 요구사항: 테두리 컬러 #EDE8DC 반영
 
 data class SavedVolunteer(
     val id: Int,
@@ -56,7 +64,6 @@ data class SavedVolunteer(
 
 @Composable
 fun SavedScreen() {
-    // 1. 상태(State)로 리스트 관리하여 클릭 시 화면이 갱신되도록 설정
     var savedList by remember {
         mutableStateOf(
             listOf(
@@ -80,53 +87,59 @@ fun SavedScreen() {
     }
 
     Scaffold(
-        containerColor = VodaBgColor
+        containerColor = VodaBgColor,
+        contentWindowInsets = ScaffoldDefaults.contentWindowInsets
     ) { paddingValues ->
         Column(
             modifier = Modifier
-                .padding(paddingValues)
+                .padding(
+                    PaddingValues(
+                        start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
+                        top = paddingValues.calculateTopPadding(),
+                        end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
+                        bottom = 0.dp // 💡 하단 바텀바와 밀착되도록 간격 차단
+                    )
+                )
                 .fillMaxSize()
-                .padding(horizontal = 20.dp)
         ) {
-            Spacer(modifier = Modifier.height(24.dp))
+            // 타이틀 및 배지 영역 고정 (패딩 유지)
+            Column(modifier = Modifier.padding(horizontal = 20.dp)) {
+                Spacer(modifier = Modifier.height(24.dp)) // 상단 패딩 피그마 규격과 동기화
 
-            Text(
-                text = "찜한 봉사",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
-            )
+                Text(
+                    text = "찜한 봉사",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
+                )
 
-            Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Box(
-                    modifier = Modifier
-                        .background(VodaGreenMain, RoundedCornerShape(20.dp))
-                        .padding(horizontal = 14.dp, vertical = 8.dp)
-                ) {
-                    Text("찜한 봉사 ${savedList.size}", color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.Bold)
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Box(
+                        modifier = Modifier
+                            .background(VodaGreenMain, RoundedCornerShape(20.dp))
+                            .padding(horizontal = 14.dp, vertical = 8.dp)
+                    ) {
+                        Text("찜한 봉사 ${savedList.size}", color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.Bold)
+                    }
                 }
+
+                Spacer(modifier = Modifier.height(20.dp))
             }
 
-            Spacer(modifier = Modifier.height(20.dp))
-
+            // 스크롤 리스트 영역 (독립 스크롤 및 바텀바 밀착)
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier.fillMaxSize()
+                contentPadding = PaddingValues(start = 20.dp, end = 20.dp, bottom = 0.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
             ) {
-                // key를 지정하면 아이템 삭제 시 리스트가 자연스럽게 재정렬됨
                 items(savedList, key = { it.id }) { item ->
                     SavedVolunteerCard(
                         item = item,
                         onFavoriteClick = {
-                            // 💡 [API 연결 주석 처리 부분]
-                            // viewModelScope.launch {
-                            //     val isSuccess = repository.deleteFavorite(item.id)
-                            //     if (isSuccess) { savedList = savedList.filterNot { it.id == item.id } }
-                            // }
-
-                            // 현재는 로컬 상태에서 즉시 제거되도록 구현
                             savedList = savedList.filterNot { it.id == item.id }
                         }
                     )
@@ -145,6 +158,8 @@ private fun SavedVolunteerCard(
         modifier = Modifier
             .fillMaxWidth()
             .background(VodaCardBgColor, RoundedCornerShape(24.dp))
+            // 💡 요구사항: #EDE8DC 색상으로 라운드 카드 테두리 선 주입
+            .border(1.dp, VodaLineColor, RoundedCornerShape(24.dp))
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -197,7 +212,10 @@ private fun SavedVolunteerCard(
             modifier = Modifier
                 .size(24.dp)
                 .clip(CircleShape)
-                .clickable { onFavoriteClick() } // 클릭 가능하도록 수정
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null // 💡 찜 해제 터치 시 불필요한 회색 사각형 인디케이션 필터링
+                ) { onFavoriteClick() }
                 .padding(2.dp)
         )
     }
