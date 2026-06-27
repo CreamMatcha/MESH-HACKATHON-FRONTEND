@@ -136,7 +136,12 @@ fun SearchScreen(onNavigateToMap: () -> Unit = {}, onNavigateToDetail: () -> Uni
                     onDeleteRecent = { keyword -> recentKeywords = recentKeywords.filter { it.keyword != keyword } },
                     onClearAllRecent = { recentKeywords = emptyList() },
                     onKeywordClick = { keyword -> query = keyword; isResultState = true },
-                    onCategoryClick = { category -> query = category; isResultState = true },
+                    onCategoryClick = { category ->
+                        query = category
+                        selectedFilters = selectedFilters + ("분야" to category)
+                        pendingSelection = pendingSelection + ("분야" to category)
+                        isResultState = true
+                    },
                     onNavigateToMap = onNavigateToMap,
                 )
             }
