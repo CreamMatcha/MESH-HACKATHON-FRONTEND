@@ -1,5 +1,23 @@
 package com.mesh.voda.data.auth.model
 
+/** 공통 API 응답 래퍼. */
+data class ApiWrapper<T>(
+    val status: Int,
+    val message: String,
+    val data: T?,
+)
+
+/** Google 로그인 요청 body. */
+data class GoogleLoginRequest(
+    val idToken: String,
+)
+
+/** Google 로그인 성공 시 서버에서 받는 데이터. */
+data class GoogleLoginApiData(
+    val accessToken: String,
+    val isNewUser: Boolean,
+)
+
 /** 로그인/회원가입 성공 후 받는 사용자 정보. */
 data class AuthUser(
     val id: String,
