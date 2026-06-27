@@ -38,6 +38,7 @@ private val TermsTextMedium = Color(0xFF9E9C96)
 @Composable
 fun LoginScreen(
     onGoogleStart: () -> Unit,
+    onSkip: () -> Unit = {},
 ) {
     Column(
         modifier = Modifier
@@ -99,7 +100,12 @@ fun LoginScreen(
             Text("Google로 시작하기", fontSize = 16.sp, fontWeight = FontWeight.SemiBold, color = WireframeBlack)
         }
 
-        Spacer(modifier = Modifier.height(18.dp))
+        Spacer(modifier = Modifier.height(12.dp))
+        TextButton(onClick = onSkip) {
+            Text("로그인 없이 둘러보기", fontSize = 13.sp, color = WireframeGrayText)
+        }
+
+        Spacer(modifier = Modifier.height(6.dp))
         Text(
             text = buildAnnotatedString {
                 append("계속 진행하면 ")

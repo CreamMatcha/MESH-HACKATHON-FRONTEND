@@ -53,9 +53,13 @@ fun VodaNavGraph(
         // 💡 에러 해결 지점: LoginScreen 파라미터 스펙 정합성 동기화
         composable(Screen.Login.route) {
             LoginScreen(
-                // 상대방이 새로 설계한 구글 로그인 진입 인터페이스 콜백 연결
                 onGoogleStart = {
                     navController.navigate(Screen.Signup.route)
+                },
+                onSkip = {
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.Login.route) { inclusive = true }
+                    }
                 }
             )
         }
