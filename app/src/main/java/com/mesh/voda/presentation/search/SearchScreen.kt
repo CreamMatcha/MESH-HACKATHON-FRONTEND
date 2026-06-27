@@ -100,7 +100,7 @@ private val filterDefaults = mapOf(
 // --- 메인 화면 ---
 
 @Composable
-fun SearchScreen() {
+fun SearchScreen(onNavigateToMap: () -> Unit = {}, onNavigateToDetail: () -> Unit = {}) {
     var query by remember { mutableStateOf("") }
     var isResultState by remember { mutableStateOf(false) }
     var recentKeywords by remember { mutableStateOf(initialRecentKeywords) }
@@ -129,7 +129,7 @@ fun SearchScreen() {
                 },
             )
             if (isResultState) {
-                ResultsContent(results = searchResults)
+                ResultsContent(results = searchResults, onNavigateToDetail = onNavigateToDetail)
             } else {
                 EmptyContent(
                     recentKeywords = recentKeywords,
@@ -137,6 +137,7 @@ fun SearchScreen() {
                     onClearAllRecent = { recentKeywords = emptyList() },
                     onKeywordClick = { keyword -> query = keyword; isResultState = true },
                     onCategoryClick = { category -> query = category; isResultState = true },
+                    onNavigateToMap = onNavigateToMap,
                 )
             }
         }
@@ -397,6 +398,7 @@ private fun EmptyContent(
     onClearAllRecent: () -> Unit,
     onKeywordClick: (String) -> Unit,
     onCategoryClick: (String) -> Unit,
+    onNavigateToMap: () -> Unit = {},
 ) {
     Column(
         modifier = Modifier
@@ -440,12 +442,12 @@ private fun EmptyContent(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text("내 주변 봉사", fontWeight = FontWeight.Bold, fontSize = 15.sp, modifier = Modifier.weight(1f))
-            TextButton(onClick = {}, contentPadding = PaddingValues(0.dp)) {
+            TextButton(onClick = onNavigateToMap, contentPadding = PaddingValues(0.dp)) {
                 Text("지도 →", fontSize = 13.sp, color = GreenPrimary)
             }
         }
         Spacer(modifier = Modifier.height(8.dp))
-        MapPreview()
+        MapPreview(onClick = onNavigateToMap)
         Spacer(modifier = Modifier.height(24.dp))
     }
 }
@@ -507,8 +509,9 @@ private fun CategoryCell(item: CategoryItem, onClick: () -> Unit) {
 }
 
 @Composable
-private fun MapPreview() {
+private fun MapPreview(onClick: () -> Unit = {}) {
     Surface(
+        onClick = onClick,
         shape = RoundedCornerShape(12.dp),
         color = Color(0xFFDDE8D8),
         modifier = Modifier.fillMaxWidth().height(144.dp)
@@ -522,7 +525,7 @@ private fun MapPreview() {
 // --- 결과 상태 ---
 
 @Composable
-private fun ResultsContent(results: List<SearchResultItem>) {
+private fun ResultsContent(results: List<SearchResultItem>, onNavigateToDetail: () -> Unit = {}) {
     var savedState by remember { mutableStateOf(results.associate { it.id to it.isSaved }) }
 
     Column(modifier = Modifier.fillMaxSize().background(BgCream)) {
@@ -541,7 +544,8 @@ private fun ResultsContent(results: List<SearchResultItem>) {
                 ResultCard(
                     item = item,
                     isSaved = savedState[item.id] == true,
-                    onToggleSave = { savedState = savedState + (item.id to !(savedState[item.id] ?: false)) }
+                    onToggleSave = { savedState = savedState + (item.id to !(savedState[item.id] ?: false)) },
+                    onCardClick = onNavigateToDetail
                 )
             }
         }
@@ -553,8 +557,10 @@ private fun ResultCard(
     item: SearchResultItem,
     isSaved: Boolean,
     onToggleSave: () -> Unit,
+    onCardClick: () -> Unit = {},
 ) {
     Surface(
+        onClick = onCardClick,
         shape = RoundedCornerShape(12.dp),
         color = Color.White,
         border = BorderStroke(1.dp, Color(0xFFE0E0E0)),
