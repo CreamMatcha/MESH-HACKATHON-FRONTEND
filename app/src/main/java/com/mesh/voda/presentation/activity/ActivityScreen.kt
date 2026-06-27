@@ -9,9 +9,7 @@ import androidx.compose.ui.unit.dp
 
 // TODO: 탭(신청/확정/이력) + 캘린더 뷰
 @Composable
-fun ActivityScreen(
-    onNavigateToSettings: () -> Unit = {}
-) {
+fun ActivityScreen() {
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
