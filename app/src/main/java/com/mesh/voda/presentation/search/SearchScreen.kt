@@ -72,7 +72,7 @@ private val categories = listOf(
     CategoryItem("♿", "장애인", Color(0xFFE8EAF6)),
     CategoryItem("🏥", "의료", Color(0xFFFFEBEE)),
     CategoryItem("🌍", "다문화", Color(0xFFE3F2FD)),
-    CategoryItem("🎨", "문화", Color(0xFFFFF3E0)),
+    CategoryItem("🎨", "예술", Color(0xFFFFF3E0)),
 )
 
 private val searchResults = listOf(
@@ -87,7 +87,7 @@ private data class FilterConfig(val key: String, val options: List<String>)
 
 private val filterConfigs = listOf(
     FilterConfig("지역", listOf("전체", "서울", "경기", "인천", "부산", "대구")),
-    FilterConfig("분야", listOf("전체", "환경", "아동", "어르신", "동물", "장애인", "의료", "다문화", "문화")),
+    FilterConfig("분야", listOf("전체", "환경", "아동", "어르신", "동물", "장애인", "의료", "다문화", "예술")),
     FilterConfig("모집중", listOf("전체", "모집중", "마감임박", "마감")),
 )
 
@@ -136,7 +136,12 @@ fun SearchScreen(onNavigateToMap: () -> Unit = {}, onNavigateToDetail: () -> Uni
                     onDeleteRecent = { keyword -> recentKeywords = recentKeywords.filter { it.keyword != keyword } },
                     onClearAllRecent = { recentKeywords = emptyList() },
                     onKeywordClick = { keyword -> query = keyword; isResultState = true },
-                    onCategoryClick = { category -> query = category; isResultState = true },
+                    onCategoryClick = { category ->
+                        query = category
+                        selectedFilters = selectedFilters + ("분야" to category)
+                        pendingSelection = pendingSelection + ("분야" to category)
+                        isResultState = true
+                    },
                     onNavigateToMap = onNavigateToMap,
                 )
             }
