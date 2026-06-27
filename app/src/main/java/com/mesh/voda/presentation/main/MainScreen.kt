@@ -21,7 +21,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.mesh.voda.R // 본인 프로젝트 패키지의 R 리소스 임포트
+import com.mesh.voda.R
 import com.mesh.voda.navigation.Screen
 import com.mesh.voda.presentation.activity.ActivityScreen
 import com.mesh.voda.presentation.home.HomeScreen
