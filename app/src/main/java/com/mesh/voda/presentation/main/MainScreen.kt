@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Timeline
 import androidx.compose.material3.Icon
@@ -25,6 +26,7 @@ import com.mesh.voda.presentation.activity.ActivityScreen
 import com.mesh.voda.presentation.home.HomeScreen
 import com.mesh.voda.presentation.saved.SavedScreen
 import com.mesh.voda.presentation.search.SearchScreen
+import com.mesh.voda.presentation.settings.SettingsScreen
 
 private data class BottomNavItem(
     val screen: Screen,
@@ -33,15 +35,14 @@ private data class BottomNavItem(
 )
 
 @Composable
-fun MainScreen(
-    onNavigateToSettings: () -> Unit = {}
-) {
+fun MainScreen() {
     val navController = rememberNavController()
     val navItems = listOf(
         BottomNavItem(Screen.Home, "홈") { Icon(Icons.Default.Home, "홈") },
         BottomNavItem(Screen.Search, "검색") { Icon(Icons.Default.Search, "검색") },
         BottomNavItem(Screen.Saved, "찜") { Icon(Icons.Default.Bookmark, "찜") },
         BottomNavItem(Screen.Activity, "내 활동") { Icon(Icons.Default.Timeline, "내 활동") },
+        BottomNavItem(Screen.Settings, "마이페이지") { Icon(Icons.Default.Person, "마이페이지") },
     )
 
     Scaffold(
@@ -74,11 +75,8 @@ fun MainScreen(
             composable(Screen.Home.route) { HomeScreen() }
             composable(Screen.Search.route) { SearchScreen() }
             composable(Screen.Saved.route) { SavedScreen() }
-            composable(Screen.Activity.route) {
-                ActivityScreen(
-                    onNavigateToSettings = onNavigateToSettings
-                )
-            }
+            composable(Screen.Activity.route) { ActivityScreen() }
+            composable(Screen.Settings.route) { SettingsScreen() }
         }
     }
 }
