@@ -74,7 +74,9 @@ fun MainScreen(
             composable(Screen.Home.route) { HomeScreen() }
             composable(Screen.Search.route) { SearchScreen() }
             composable(Screen.Saved.route) { SavedScreen() }
-            composable(Screen.Activity.route) { ActivityScreen() }
+            composable(Screen.Activity.route) {
+                ActivityScreen()
+            }
         }
     }
 }
