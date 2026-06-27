@@ -104,22 +104,20 @@ fun ActivityScreen(
         containerColor = VodaBgColor,
         contentWindowInsets = ScaffoldDefaults.contentWindowInsets
     ) { paddingValues ->
-        // 💡 고정 영역과 스크롤 영역을 나누기 위해 최상위는 패딩이 포함된 일반 Column 사용
         Column(
             modifier = Modifier
                 .padding(
                     PaddingValues(
                         start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
-                        top = paddingValues.calculateTopPadding(),
+                        top = 8.dp, // 💡 기존 calculateTopPadding() 대신 고정 패딩 주입으로 상단 여백 제거
                         end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
                         bottom = 0.dp // 하단 바텀바와 밀착
                     )
                 )
                 .fillMaxSize()
         ) {
-            // 📌 [고정 영역 시작] - 이 안의 요소들은 스크롤되지 않고 화면 상단에 고정됩니다.
+            // 📌 [고정 영역 시작]
             Column(modifier = Modifier.padding(horizontal = 20.dp)) {
-                Spacer(modifier = Modifier.height(24.dp))
                 Text("내 활동", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = Color.Black)
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -143,7 +141,7 @@ fun ActivityScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // 탭 바 (상단 고정됨)
+                // 탭 바
                 Box(modifier = Modifier.fillMaxWidth()) {
                     Box(modifier = Modifier.fillMaxWidth().height(2.dp).background(VodaLineColor).align(Alignment.BottomCenter))
                     Row(modifier = Modifier.fillMaxWidth()) {
@@ -196,9 +194,8 @@ fun ActivityScreen(
             }
             // 📌 [고정 영역 끝]
 
-            // 🔄 [스크롤 영역 시작] - 여기서부터 바텀바 경계선까지의 콘텐츠만 독립적으로 스크롤됩니다.
+            // 🔄 [스크롤 영역 시작]
             if (selectedTab == ActivityTab.COMPLETED) {
-                // 활동 이력 탭 리스트 내부 스크롤 구조 (상단 칩 및 연도 포함)
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -221,7 +218,6 @@ fun ActivityScreen(
 
                     items(filteredList, key = { it.id }) { item ->
                         Box(modifier = Modifier.fillMaxWidth()) {
-                            // 타임라인 세로선 그리기
                             Canvas(modifier = Modifier.matchParentSize().padding(start = 11.dp)) {
                                 drawLine(color = VodaLineColor, start = Offset(0f, 0f), end = Offset(0f, size.height), strokeWidth = 2.dp.toPx())
                             }
@@ -231,13 +227,12 @@ fun ActivityScreen(
                     }
                 }
             } else {
-                // 신청한 봉사 / 완료한 봉사 리스트 내부 스크롤 구조
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
-                    contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 20.dp, bottom = 0.dp) // 하단 마진 0.dp로 완벽 밀착
+                    contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 20.dp, bottom = 0.dp)
                 ) {
                     items(filteredList, key = { it.id }) { item ->
                         ActivityCard(item)
