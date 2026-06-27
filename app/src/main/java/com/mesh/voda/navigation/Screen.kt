@@ -12,4 +12,10 @@ sealed class Screen(val route: String) {
     data object Saved : Screen("saved")
     data object Activity : Screen("activity")
     data object Settings : Screen("settings")
+
+    // Map
+    data object Map : Screen("map")
+
+    // Detail
+    data object Detail : Screen("detail")
 }
