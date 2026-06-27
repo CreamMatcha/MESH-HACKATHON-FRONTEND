@@ -62,7 +62,6 @@ enum class ActivityTab(val title: String) {
     ALL("신청한 봉사"), UPCOMING("완료한 봉사"), COMPLETED("활동 이력")
 }
 
-// 데이터 모델 동일
 data class ActivityVolunteer(
     val id: Int, val emoji: String, val emojiBg: Color, val status: String,
     val statusColor: Color, val statusBg: Color, val title: String,
@@ -75,7 +74,7 @@ fun ActivityScreen(
 ) {
     var selectedTab by remember { mutableStateOf(ActivityTab.ALL) }
 
-    val allActivities = listOf(
+    val initialActivities = listOf(
         ActivityVolunteer(
             id = 1, "🌱", Color(0xFFEBF5EB), "예정", Color(0xFFE67E22), Color(0xFFFDF2E9),
             "한강 플로깅 환경 캠페인", "2026.07.12", "3시간", needsAction = true, category = "환경"
@@ -94,10 +93,38 @@ fun ActivityScreen(
         )
     )
 
+    var activities by remember { mutableStateOf(initialActivities) }
+
+    // 파생 상태
+    val pendingList = activities.filter { it.status == "예정" }
+    val completedList = activities.filter { it.status.contains("완료") }
+    val pendingCount = pendingList.size
+    val completedCount = completedList.size
+    val totalCount = activities.size
+
     val filteredList = when (selectedTab) {
-        ActivityTab.ALL -> allActivities
-        ActivityTab.UPCOMING -> allActivities.filter { it.status == "예정" }
-        ActivityTab.COMPLETED -> allActivities.filter { it.status.contains("완료") && it.date.startsWith("2025") }
+        ActivityTab.ALL -> activities
+        ActivityTab.UPCOMING -> completedList
+        ActivityTab.COMPLETED -> completedList.filter { it.date.startsWith("2025") }
+    }
+
+    // 취소하기
+    val onCancel: (Int) -> Unit = { id ->
+        activities = activities.filter { it.id != id }
+    }
+
+    // 완료 처리하기
+    val onComplete: (Int) -> Unit = { id ->
+        activities = activities.map { item ->
+            if (item.id == id) {
+                item.copy(
+                    status = "✅ 완료",
+                    statusColor = VodaGreenMain,
+                    statusBg = VodaGreenBadgeBg
+                )
+            } else item
+        }
+        selectedTab = ActivityTab.UPCOMING
     }
 
     Scaffold(
@@ -109,9 +136,9 @@ fun ActivityScreen(
                 .padding(
                     PaddingValues(
                         start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
-                        top = 8.dp, // 💡 기존 calculateTopPadding() 대신 고정 패딩 주입으로 상단 여백 제거
+                        top = 8.dp,
                         end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
-                        bottom = 0.dp // 하단 바텀바와 밀착
+                        bottom = 0.dp
                     )
                 )
                 .fillMaxSize()
@@ -131,11 +158,19 @@ fun ActivityScreen(
                             .padding(vertical = 20.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) { DashboardItem("4", "신청") }
+                        Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
+                            DashboardItem("$totalCount", "신청")
+                        }
                         Box(modifier = Modifier.size(1.dp, 28.dp).background(Color(0x26FFFFFF)))
-                        Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) { DashboardItem("2", "완료") }
+                        Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
+                            DashboardItem("$completedCount", "완료")
+                        }
                         Box(modifier = Modifier.size(1.dp, 28.dp).background(Color(0x26FFFFFF)))
-                        Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) { DashboardItem("6", "누적 시간") }
+                        Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
+                            // 누적 시간: 완료된 항목의 시간 합산
+                            val totalHours = completedList.sumOf { it.duration.replace("시간", "").trim().toIntOrNull() ?: 0 }
+                            DashboardItem("${totalHours}h", "누적 시간")
+                        }
                     }
                 }
 
@@ -146,9 +181,9 @@ fun ActivityScreen(
                     Box(modifier = Modifier.fillMaxWidth().height(2.dp).background(VodaLineColor).align(Alignment.BottomCenter))
                     Row(modifier = Modifier.fillMaxWidth()) {
                         ActivityTab.values().forEach { tab ->
-                            val count = when(tab) {
-                                ActivityTab.ALL -> 4
-                                ActivityTab.UPCOMING -> 2
+                            val count = when (tab) {
+                                ActivityTab.ALL -> totalCount
+                                ActivityTab.UPCOMING -> completedCount
                                 ActivityTab.COMPLETED -> 12
                             }
                             val isSelected = selectedTab == tab
@@ -197,9 +232,7 @@ fun ActivityScreen(
             // 🔄 [스크롤 영역 시작]
             if (selectedTab == ActivityTab.COMPLETED) {
                 LazyColumn(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f),
+                    modifier = Modifier.fillMaxWidth().weight(1f),
                     contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 20.dp, bottom = 0.dp)
                 ) {
                     item {
@@ -228,14 +261,16 @@ fun ActivityScreen(
                 }
             } else {
                 LazyColumn(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f),
+                    modifier = Modifier.fillMaxWidth().weight(1f),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                     contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 20.dp, bottom = 0.dp)
                 ) {
                     items(filteredList, key = { it.id }) { item ->
-                        ActivityCard(item)
+                        ActivityCard(
+                            item = item,
+                            onCancel = onCancel,
+                            onComplete = onComplete
+                        )
                     }
                 }
             }
@@ -322,7 +357,11 @@ private fun ProfileDetailCard(onNavigateToSettings: () -> Unit) {
 }
 
 @Composable
-private fun ActivityCard(item: ActivityVolunteer) {
+private fun ActivityCard(
+    item: ActivityVolunteer,
+    onCancel: (Int) -> Unit,
+    onComplete: (Int) -> Unit
+) {
     Column(modifier = Modifier.fillMaxWidth().background(VodaCardBgColor, RoundedCornerShape(24.dp)).border(1.dp, VodaLineColor, RoundedCornerShape(24.dp)).padding(16.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Box(modifier = Modifier.size(54.dp).clip(RoundedCornerShape(14.dp)).background(item.emojiBg), contentAlignment = Alignment.Center) { Text(item.emoji, fontSize = 24.sp) }
@@ -339,9 +378,35 @@ private fun ActivityCard(item: ActivityVolunteer) {
                 }
             }
         }
-        if (item.needsAction) {
+        if (item.status == "예정") {
             Spacer(modifier = Modifier.height(12.dp))
-            Box(modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(Color(0xFFEBF5EB)).clickable { }.padding(vertical = 10.dp), contentAlignment = Alignment.Center) { Text(text = "활동 완료 처리하기", color = VodaGreenMain, fontSize = 12.sp, fontWeight = FontWeight.Bold) }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Color(0xFFEDEDED))
+                        .clickable { onCancel(item.id) }  // ✅ 취소 → 목록에서 제거
+                        .padding(vertical = 10.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(text = "취소하기", color = Color(0xFF666666), fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                }
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Color(0xFFEBF5EB))
+                        .clickable { onComplete(item.id) }  // ✅ 완료 처리 → 완료한 봉사 탭으로
+                        .padding(vertical = 10.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(text = "활동 완료 처리하기", color = VodaGreenMain, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                }
+            }
         }
     }
 }
