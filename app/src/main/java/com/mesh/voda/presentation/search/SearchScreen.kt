@@ -65,14 +65,15 @@ private val initialRecentKeywords = listOf(
 )
 
 private val categories = listOf(
-    CategoryItem("🌿", "환경", Color(0xFFE8F5E9)),
-    CategoryItem("👶", "아동", Color(0xFFFFF9C4)),
-    CategoryItem("🧓", "어르신", Color(0xFFFCE4EC)),
-    CategoryItem("🐾", "동물", Color(0xFFF3E5F5)),
-    CategoryItem("♿", "장애인", Color(0xFFE8EAF6)),
-    CategoryItem("🏥", "의료", Color(0xFFFFEBEE)),
-    CategoryItem("🌍", "다문화", Color(0xFFE3F2FD)),
-    CategoryItem("🎨", "예술", Color(0xFFFFF3E0)),
+    CategoryItem("🌿", "환경", Color(0xFFE8F2E3)),
+    CategoryItem("👶", "아동", Color(0xFFFFDCED)),
+    CategoryItem("🧓", "어르신", Color(0xFFF3DCE3)),
+    CategoryItem("🐾", "동물", Color(0xFFE3F4D7)),
+    CategoryItem("♿", "장애인", Color(0xFFE8E3F5)),
+    CategoryItem("🏥", "의료", Color(0xFFF5C0C0)),
+    CategoryItem("🌍", "다문화", Color(0xFFE3F0F5)),
+    CategoryItem("🎨", "예술", Color(0xFFFFFEF6)),
+    CategoryItem("🏘️", "지역사회", Color(0xFFF5F5E3)),
 )
 
 private val searchResults = listOf(
@@ -87,7 +88,7 @@ private data class FilterConfig(val key: String, val options: List<String>)
 
 private val filterConfigs = listOf(
     FilterConfig("지역", listOf("전체", "서울", "경기", "인천", "부산", "대구")),
-    FilterConfig("분야", listOf("전체", "환경", "아동", "어르신", "동물", "장애인", "의료", "다문화", "예술")),
+    FilterConfig("분야", listOf("전체", "환경", "아동", "어르신", "동물", "장애인", "의료", "다문화", "예술", "지역사회")),
     FilterConfig("모집중", listOf("전체", "모집중", "마감임박", "마감")),
 )
 
@@ -488,9 +489,14 @@ private fun CategoryGrid(categories: List<CategoryItem>, onCategoryClick: (Strin
     val rows = categories.chunked(4)
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         rows.forEach { row ->
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+            Row(modifier = Modifier.fillMaxWidth()) {
                 row.forEach { item ->
-                    CategoryCell(item = item, onClick = { onCategoryClick(item.label) })
+                    Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
+                        CategoryCell(item = item, onClick = { onCategoryClick(item.label) })
+                    }
+                }
+                repeat(4 - row.size) {
+                    Spacer(modifier = Modifier.weight(1f))
                 }
             }
         }

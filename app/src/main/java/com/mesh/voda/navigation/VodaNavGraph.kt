@@ -84,6 +84,9 @@ fun VodaNavGraph(
             MainScreen(
                 onNavigateToSettings = {
                     navController.navigate(Screen.Settings.route)
+                },
+                onNavigateToRecommendation = {
+                    navController.navigate(Screen.Recommendation.route)
                 }
             )
         }

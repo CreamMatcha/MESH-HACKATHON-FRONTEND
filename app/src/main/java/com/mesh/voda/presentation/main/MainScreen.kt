@@ -38,7 +38,8 @@ private data class BottomNavItem(
 
 @Composable
 fun MainScreen(
-    onNavigateToSettings: () -> Unit = {}
+    onNavigateToSettings: () -> Unit = {},
+    onNavigateToRecommendation: () -> Unit = {}
 ) {
     val navController = rememberNavController()
 
@@ -103,7 +104,13 @@ fun MainScreen(
             startDestination = Screen.Home.route,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable(Screen.Home.route) { HomeScreen() }
+            composable(Screen.Home.route) {
+                HomeScreen(
+                    onNavigateToRecommendation = onNavigateToRecommendation,
+                    onNavigateToSettings = onNavigateToSettings,
+                    onNavigateToMap = { navController.navigate(Screen.Map.route) }
+                )
+            }
             composable(Screen.Search.route) {
                 SearchScreen(
                     onNavigateToMap = { navController.navigate(Screen.Map.route) },
