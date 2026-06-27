@@ -24,7 +24,9 @@ import androidx.navigation.compose.rememberNavController
 import com.mesh.voda.R
 import com.mesh.voda.navigation.Screen
 import com.mesh.voda.presentation.activity.ActivityScreen
+import com.mesh.voda.presentation.detail.DetailScreen
 import com.mesh.voda.presentation.home.HomeScreen
+import com.mesh.voda.presentation.map.MapScreen
 import com.mesh.voda.presentation.saved.SavedScreen
 import com.mesh.voda.presentation.search.SearchScreen
 
@@ -102,12 +104,26 @@ fun MainScreen(
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(Screen.Home.route) { HomeScreen() }
-            composable(Screen.Search.route) { SearchScreen() }
+            composable(Screen.Search.route) {
+                SearchScreen(
+                    onNavigateToMap = { navController.navigate(Screen.Map.route) },
+                    onNavigateToDetail = { navController.navigate(Screen.Detail.route) }
+                )
+            }
             composable(Screen.Saved.route) { SavedScreen() }
             composable(Screen.Activity.route) {
                 ActivityScreen(
                     onNavigateToSettings = onNavigateToSettings
                 )
+            }
+            composable(Screen.Map.route) {
+                MapScreen(
+                    onBack = { navController.popBackStack() },
+                    onNavigateToDetail = { navController.navigate(Screen.Detail.route) }
+                )
+            }
+            composable(Screen.Detail.route) {
+                DetailScreen(onBack = { navController.popBackStack() })
             }
         }
     }
