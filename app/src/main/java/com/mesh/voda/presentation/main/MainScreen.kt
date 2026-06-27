@@ -42,16 +42,16 @@ fun MainScreen(
 
     val navItems = listOf(
         BottomNavItem(Screen.Home, "홈") {
-            Icon(painter = painterResource(id = R.drawable.ic_nav_home), contentDescription = "홈")
+            Icon(painter = painterResource(id = R.drawable.main_ic_nav_home), contentDescription = "홈")
         },
         BottomNavItem(Screen.Search, "검색") {
-            Icon(painter = painterResource(id = R.drawable.ic_nav_search), contentDescription = "검색")
+            Icon(painter = painterResource(id = R.drawable.main_ic_nav_search), contentDescription = "검색")
         },
         BottomNavItem(Screen.Saved, "찜") {
-            Icon(painter = painterResource(id = R.drawable.ic_nav_saved), contentDescription = "찜")
+            Icon(painter = painterResource(id = R.drawable.main_ic_nav_saved), contentDescription = "찜")
         },
         BottomNavItem(Screen.Activity, "내 활동") {
-            Icon(painter = painterResource(id = R.drawable.ic_nav_activity), contentDescription = "내 활동")
+            Icon(painter = painterResource(id = R.drawable.main_ic_nav_activity), contentDescription = "내 활동")
         },
     )
 
@@ -105,9 +105,7 @@ fun MainScreen(
             composable(Screen.Search.route) { SearchScreen() }
             composable(Screen.Saved.route) { SavedScreen() }
             composable(Screen.Activity.route) {
-                ActivityScreen(
-                    onNavigateToSettings = onNavigateToSettings
-                )
+                ActivityScreen()
             }
         }
     }
