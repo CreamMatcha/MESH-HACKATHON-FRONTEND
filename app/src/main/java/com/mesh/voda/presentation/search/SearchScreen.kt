@@ -1,4 +1,4 @@
-package com.mesh.voda.presentation.search
+﻿package com.mesh.voda.presentation.search
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -13,22 +13,15 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material.icons.filled.Mic
-import androidx.compose.material.icons.outlined.Mic
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
@@ -37,13 +30,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import com.mesh.voda.R
 import com.mesh.voda.presentation.common.theme.VodaTheme
 
 // --- 색상 ---
 
 private val BgCream = Color(0xFFF5F2EA)
-private val GreenPrimary = Color(0xFF4A7C59)
-private val GreenLight = Color(0xFFE8F5E9)
+private val GreenPrimary = Color(0xFF4E8A3F)
+private val GreenLight = Color(0xFFE8F2E3)
 
 // --- 데이터 모델 ---
 
@@ -204,7 +198,11 @@ private fun SearchHeader(
         ) {
             if (isResultState) {
                 IconButton(onClick = onBack, modifier = Modifier.size(36.dp)) {
-                    Icon(Icons.Default.ArrowBack, contentDescription = "뒤로", tint = Color.Black)
+                    Icon(
+                        painter = painterResource(R.drawable.search_ic_arrow_back),
+                        contentDescription = "뒤로",
+                        tint = Color.Black
+                    )
                 }
                 Spacer(modifier = Modifier.width(4.dp))
             }
@@ -218,7 +216,12 @@ private fun SearchHeader(
                     modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(Icons.Default.Search, contentDescription = null, tint = Color.Gray, modifier = Modifier.size(17.dp))
+                    Icon(
+                        painter = painterResource(R.drawable.search_ic_search),
+                        contentDescription = null,
+                        tint = Color.Gray,
+                        modifier = Modifier.size(17.dp)
+                    )
                     Spacer(modifier = Modifier.width(8.dp))
                     BasicTextField(
                         value = query,
@@ -235,10 +238,20 @@ private fun SearchHeader(
                     )
                     if (query.isNotEmpty()) {
                         IconButton(onClick = onClear, modifier = Modifier.size(18.dp)) {
-                            Icon(Icons.Default.Close, contentDescription = "지우기", tint = Color.Gray, modifier = Modifier.size(15.dp))
+                            Icon(
+                                painter = painterResource(R.drawable.search_ic_close),
+                                contentDescription = "지우기",
+                                tint = Color.Gray,
+                                modifier = Modifier.size(15.dp)
+                            )
                         }
                     } else {
-                        Icon(Icons.Outlined.Mic, contentDescription = null, tint = Color.Gray, modifier = Modifier.size(17.dp))
+                        Icon(
+                            painter = painterResource(R.drawable.search_ic_mic),
+                            contentDescription = null,
+                            tint = Color.Gray,
+                            modifier = Modifier.size(17.dp)
+                        )
                     }
                 }
             }
@@ -287,9 +300,9 @@ private fun FilterRow(
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Icon(
-                        imageVector = if (isOpen) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                        painter = painterResource(R.drawable.search_ic_chevron_down),
                         contentDescription = null,
-                        modifier = Modifier.size(12.dp),
+                        modifier = Modifier.size(12.dp).rotate(if (isOpen) 180f else 0f),
                         tint = if (isActive) Color.White else Color.Gray
                     )
                 }
@@ -325,7 +338,12 @@ private fun FilterDropdown(
             ) {
                 Text(text = title, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
                 IconButton(onClick = onDismiss, modifier = Modifier.size(20.dp)) {
-                    Icon(Icons.Default.Close, contentDescription = "닫기", modifier = Modifier.size(16.dp), tint = Color.Gray)
+                    Icon(
+                        painter = painterResource(R.drawable.search_ic_close),
+                        contentDescription = "닫기",
+                        modifier = Modifier.size(16.dp),
+                        tint = Color.Gray
+                    )
                 }
             }
             HorizontalDivider(color = Color(0xFFF0F0F0))
@@ -447,7 +465,12 @@ private fun RecentChip(keyword: String, onDelete: () -> Unit, onClick: () -> Uni
             Text(keyword, fontSize = 13.sp)
             Spacer(modifier = Modifier.width(4.dp))
             IconButton(onClick = onDelete, modifier = Modifier.size(16.dp)) {
-                Icon(Icons.Default.Close, contentDescription = "삭제", modifier = Modifier.size(11.dp), tint = Color.Gray)
+                Icon(
+                    painter = painterResource(R.drawable.search_ic_close),
+                    contentDescription = "삭제",
+                    modifier = Modifier.size(11.dp),
+                    tint = Color.Gray
+                )
             }
         }
     }
@@ -559,12 +582,21 @@ private fun ResultCard(
             }
             Spacer(modifier = Modifier.width(8.dp))
             IconButton(onClick = onToggleSave, modifier = Modifier.size(36.dp)) {
-                Icon(
-                    imageVector = if (isSaved) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                    contentDescription = "저장",
-                    tint = if (isSaved) Color(0xFFE53935) else Color.LightGray,
-                    modifier = Modifier.size(20.dp)
-                )
+                if (isSaved) {
+                    Icon(
+                        imageVector = Icons.Default.Favorite,
+                        contentDescription = "저장",
+                        tint = Color(0xFFE53935),
+                        modifier = Modifier.size(20.dp)
+                    )
+                } else {
+                    Icon(
+                        painter = painterResource(R.drawable.home_ic_heart),
+                        contentDescription = "저장",
+                        tint = Color.LightGray,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
             }
         }
     }
@@ -596,3 +628,4 @@ fun SearchScreenPreview() {
         SearchScreen()
     }
 }
+
