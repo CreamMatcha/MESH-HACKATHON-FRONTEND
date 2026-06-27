@@ -1,6 +1,7 @@
 package com.mesh.voda.presentation.onboarding
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -22,10 +23,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.mesh.voda.R
 import kotlinx.coroutines.launch
 
 val OnboardingGreen = Color(0xFF4E8A3F)
@@ -34,7 +38,7 @@ val OnboardingPlaceholderGray = Color(0xFFE8E6E0)
 val OnboardingTextBlack = Color(0xFF1C1C1E)
 val OnboardingGrayText = Color(0xFF8E8E93)
 
-// 일러스트용 색상
+
 private val IllGreenTop = Color(0xFFDDEACF)
 private val IllPinkTop = Color(0xFFF3DFDF)
 private val IllBorder = Color(0xFFECEAE4)
@@ -71,7 +75,7 @@ fun OnboardingScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(OnboardingCream)
-            .statusBarsPadding() // 상태바 영역 확보
+            .statusBarsPadding()
     ) {
 
         HorizontalPager(
@@ -81,7 +85,7 @@ fun OnboardingScreen(
             OnboardingPageContent(pages[page], page, pages.size)
         }
 
-        // 하단 인디케이터 (점)
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -100,7 +104,7 @@ fun OnboardingScreen(
             }
         }
 
-        // 하단 다음/시작하기 버튼
+
         Button(
             onClick = {
                 if (pagerState.currentPage < pages.size - 1) {
@@ -137,7 +141,6 @@ private fun OnboardingPageContent(page: OnboardingPage, index: Int, total: Int) 
     Column(modifier = Modifier.fillMaxSize().padding(horizontal = 24.dp)) {
         Spacer(modifier = Modifier.height(20.dp))
 
-        // 일러스트 영역 — 2,3번째 화면은 실제 미리보기, 나머지는 placeholder
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -145,8 +148,10 @@ private fun OnboardingPageContent(page: OnboardingPage, index: Int, total: Int) 
             contentAlignment = Alignment.Center
         ) {
             when (index) {
+                0 -> PawIllustration()
                 1 -> AiRecommendIllustration()
                 2 -> ActivityTimelineIllustration()
+                3 -> DogIllustration()
                 else -> PlaceholderIllustration(index, total)
             }
         }
@@ -179,7 +184,7 @@ private fun PlaceholderIllustration(index: Int, total: Int) {
             .fillMaxSize()
             .background(OnboardingPlaceholderGray, RoundedCornerShape(24.dp))
     ) {
-        // TODO: 실제 일러스트 이미지 삽입 위치
+
         Box(
             modifier = Modifier
                 .align(Alignment.BottomStart)
@@ -190,6 +195,30 @@ private fun PlaceholderIllustration(index: Int, total: Int) {
             Text("일러스트 ${index + 1}/$total", fontSize = 11.sp, color = OnboardingGrayText)
         }
     }
+}
+
+/* ---------------- 1번째 화면: 발바닥 일러스트 ---------------- */
+
+@Composable
+private fun PawIllustration() {
+    Image(
+        painter = painterResource(R.drawable.onboarding_paw),
+        contentDescription = null,
+        contentScale = ContentScale.Fit,
+        modifier = Modifier.size(300.dp)
+    )
+}
+
+/* ---------------- 4번째 화면: 강아지 일러스트 ---------------- */
+
+@Composable
+private fun DogIllustration() {
+    Image(
+        painter = painterResource(R.drawable.onboarding_dogs),
+        contentDescription = null,
+        contentScale = ContentScale.Fit,
+        modifier = Modifier.size(300.dp)
+    )
 }
 
 /* ---------------- 2번째 화면: AI 맞춤 추천 미리보기 ---------------- */
@@ -260,14 +289,14 @@ private fun ActivityTimelineIllustration() {
             .border(1.dp, IllBorder, RoundedCornerShape(16.dp))
             .padding(14.dp)
     ) {
-        // 탭
+
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
             TabItem("신청한 봉사", "2", false)
             TabItem("완료한 봉사", "7", false)
             TabItem("활동 이력", "12", true)
         }
         Spacer(Modifier.height(12.dp))
-        // 카테고리 칩
+
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             CategoryChip("🌱 환경 7회", OnboardingGreen, Color.White)
             CategoryChip("💗 복지 3회", IllPinkChipBg, IllPinkText)
@@ -321,7 +350,7 @@ private fun CategoryChip(text: String, bg: Color, textColor: Color) {
 @Composable
 private fun TimelineItem(title: String, date: String) {
     Row(verticalAlignment = Alignment.CenterVertically) {
-        // 타임라인 점
+
         Box(
             modifier = Modifier
                 .size(10.dp)
@@ -329,7 +358,7 @@ private fun TimelineItem(title: String, date: String) {
                 .border(2.dp, OnboardingGreen, CircleShape)
         )
         Spacer(Modifier.width(8.dp))
-        // 항목 카드
+
         Row(
             modifier = Modifier
                 .weight(1f)

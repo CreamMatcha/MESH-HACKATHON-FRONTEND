@@ -35,7 +35,7 @@ private val GreenTop = Color(0xFFDDEACF)
 private val PinkTop = Color(0xFFF3DFDF)
 private val LikeRed = Color(0xFFEF5350)
 
-// --- 가짜 데이터 (TODO: AI 추천 API 연동 시 교체) ---
+
 private data class Recommendation(
     val name: String,
     val location: String,
@@ -98,7 +98,7 @@ fun RecommendationScreen(onGoHome: () -> Unit) {
 
 @Composable
 private fun RecommendationCard(rec: Recommendation) {
-    // 겉모습 토글용 로컬 상태 (TODO: 실제 찜 기능은 API 연동 시)
+
     var liked by remember { mutableStateOf(false) }
 
     Column(
@@ -107,14 +107,14 @@ private fun RecommendationCard(rec: Recommendation) {
             .background(Color.White)
             .border(1.dp, RecBorder, RoundedCornerShape(16.dp))
     ) {
-        // 상단 컬러 이미지 영역
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(108.dp)
                 .background(rec.topColor)
         ) {
-            // + AI 추천 배지
+
             Box(
                 modifier = Modifier
                     .align(Alignment.TopStart)
@@ -125,7 +125,7 @@ private fun RecommendationCard(rec: Recommendation) {
             ) {
                 Text("+ AI 추천", fontSize = 10.sp, fontWeight = FontWeight.SemiBold, color = Color.White)
             }
-            // 찜 하트 (누르면 빨갛게 토글)
+
             Icon(
                 imageVector = if (liked) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                 contentDescription = if (liked) "찜 취소" else "찜",
@@ -137,11 +137,11 @@ private fun RecommendationCard(rec: Recommendation) {
                     .clickable { liked = !liked }
                     .size(20.dp)
             )
-            // 중앙 이모지 (TODO: 실제 봉사 이미지로 교체)
+
             Text(rec.emoji, fontSize = 38.sp, modifier = Modifier.align(Alignment.Center))
         }
 
-        // 하단 텍스트 영역
+
         Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 12.dp)) {
             Text(
                 rec.name,

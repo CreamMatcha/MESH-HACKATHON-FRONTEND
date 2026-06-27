@@ -519,7 +519,7 @@ private fun TendencyStep(state: SignupUiState, viewModel: SignupViewModel) {
             .background(VoDaCreamBg)
             .padding(horizontal = 24.dp, vertical = 24.dp)
     ) {
-        // 타이틀
+
         Text("봉사 성향을 알려주세요", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = VoDaBlack)
         Spacer(Modifier.height(8.dp))
         Text("나에게 맞는 봉사를 더 잘 추천해드릴게요", fontSize = 14.sp, color = VoDaGrayText)
@@ -546,7 +546,7 @@ private fun TendencyStep(state: SignupUiState, viewModel: SignupViewModel) {
 
         Spacer(Modifier.height(32.dp))
 
-        // 3. 선호 스타일 — 장소(실내/실외)와 인원(혼자/단체)은 각각 단일 선택
+
         QuestionTitle("어떤 스타일을 선호하세요?")
         Row(modifier = Modifier.padding(top = 12.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             listOf("실내 활동", "실외 활동").forEach { place ->
