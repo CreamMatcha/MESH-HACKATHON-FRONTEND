@@ -121,20 +121,12 @@ private fun HomeTopBar() {
         verticalAlignment = Alignment.CenterVertically
     ) {
         // 로고 아이콘
-        Surface(
-            modifier = Modifier.size(36.dp),
-            shape = CircleShape,
-            color = GreenPrimary
-        ) {
-            Box(contentAlignment = Alignment.Center) {
-                Icon(
-                    painter = painterResource(R.drawable.home_ic_logo),
-                    contentDescription = null,
-                    tint = Color.Unspecified,
-                    modifier = Modifier.size(20.dp)
-                )
-            }
-        }
+        Icon(
+            painter = painterResource(R.drawable.home_ic_logo),
+            contentDescription = null,
+            tint = Color.Unspecified,
+            modifier = Modifier.size(36.dp)
+        )
         Spacer(modifier = Modifier.width(10.dp))
         Text(
             text = "VoDa",
